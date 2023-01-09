@@ -1,0 +1,24 @@
+/* normalize css starts here */
+* {
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+a:hover {
+  text-decoration: none;
+  color: inherit;
+}
+picture {
+  display: contents;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+/* normalize css ends here */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
