@@ -1,7 +1,8 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { useAppSelector } from "hooks/reduxHooks";
 
 const Profile = () => {
-  const user = false;
+  const user = useAppSelector(store => store.auth.user);
   
   return user ? (
     <Flex

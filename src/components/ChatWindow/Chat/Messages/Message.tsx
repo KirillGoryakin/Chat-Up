@@ -17,6 +17,7 @@ const Message: React.FC<Props> = ({ message }) => {
         background={message.isOur ? 'green.500' : 'purple.500'}
         borderRadius={15}
         px={2} py={1}
+        maxW='90%'
       >
         <Text
           textAlign={message.isOur ? 'right' : 'left'}

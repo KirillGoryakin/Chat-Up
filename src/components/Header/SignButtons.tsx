@@ -1,11 +1,14 @@
 import { Button, Flex } from "@chakra-ui/react";
+import { useAppSelector } from "hooks/reduxHooks";
+import { useNavigate } from "react-router";
 
 type Props = {
   [key: string]: any;
 };
 
 const SignButtons: React.FC<Props> = (props) => {
-  const user = false;
+  const navigate = useNavigate();
+  const user = useAppSelector(store => store.auth.user);
   
   return (
     <Flex {...props}>
@@ -15,10 +18,10 @@ const SignButtons: React.FC<Props> = (props) => {
         </Button>
         :
         <>
-          <Button>
+          <Button onClick={() => navigate('/login')}>
             Sign In
           </Button>
-          <Button>
+          <Button onClick={() => navigate('/register')}>
             Sign Up
           </Button>
         </>
