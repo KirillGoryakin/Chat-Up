@@ -4,7 +4,9 @@ import {
   signInWithEmailAndPassword,
   getAuth,
   updateProfile,
-  User
+  User,
+  signInWithPopup,
+  GoogleAuthProvider
 } from 'firebase/auth';
 
 interface SignInPayload {
@@ -13,7 +15,7 @@ interface SignInPayload {
 };
 
 export const logIn = createAsyncThunk(
-  'auth/login',
+  'auth/logIn',
   async (payload: SignInPayload, { rejectWithValue }) => {
     const { email, password } = payload;
     const auth = getAuth();
@@ -46,6 +48,20 @@ export const signUp = createAsyncThunk(
     }
 });
 
+export const logInWithGoogle = createAsyncThunk(
+  'auth/logInWithGoogle',
+  async (_, { rejectWithValue }) => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const { user } = await signInWithPopup(auth, provider);
+      return user;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  });
+
 export interface AuthState {
   user: User | null;
 };
@@ -72,6 +88,7 @@ const authSlice = createSlice({
   extraReducers: {
     [signUp.fulfilled.type]: setUser,
     [logIn.fulfilled.type]: setUser,
+    [logInWithGoogle.fulfilled.type]: setUser,
   },
 });
 

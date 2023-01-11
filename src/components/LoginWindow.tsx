@@ -1,7 +1,8 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { useAppDispatch } from "hooks/reduxHooks";
-import { logIn } from "store/slices/AuthSlice";
+import { logIn, logInWithGoogle } from "store/slices/AuthSlice";
 import { FormInput } from "./FormInput";
+import { GoogleButton } from "./GoogleButton";
 
 type LoginFormEvent = {
   target: {
@@ -35,6 +36,10 @@ const LoginWindow = () => {
       <FormInput size='lg' placeholder="Email" name='email' />
       <FormInput size='lg' placeholder="Password" type='password' name='password' />
       <Button type='submit'>Log In</Button>
+
+      <GoogleButton onClick={() => dispatch(logInWithGoogle())}>
+        Log In with Google
+      </GoogleButton>
     </Flex>
   )
 }

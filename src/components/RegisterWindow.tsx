@@ -1,7 +1,8 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { FormInput } from "components/FormInput";
 import { useAppDispatch } from "hooks/reduxHooks";
-import { signUp } from "store/slices/AuthSlice";
+import { logInWithGoogle, signUp } from "store/slices/AuthSlice";
+import { GoogleButton } from "./GoogleButton";
 
 type RegisterFormEvent = {
   target: {
@@ -46,6 +47,10 @@ const RegisterWindow = () => {
       <FormInput placeholder="Password" name='password' type='password' />
       <FormInput placeholder="Url to avatar (optional)" name='avatar' />
       <Button type='submit'>Sign Up</Button>
+      
+      <GoogleButton onClick={() => dispatch(logInWithGoogle())}>
+        Sign Up with Google
+      </GoogleButton>
     </Flex>
   )
 }
