@@ -4,25 +4,31 @@ import { useAppSelector } from "hooks/reduxHooks";
 const Profile = () => {
   const user = useAppSelector(store => store.auth.user);
   
-  return user ? (
-    <Flex
-      alignItems='center'
-      gap={2}
-      ml={6}
-    >
-      <Text
-        fontWeight={500}
-        color='white'
+  if (user){
+    const { displayName, photoURL, email } = user;
+    
+    return (
+      <Flex
+        alignItems='center'
+        gap={2}
+        ml={6}
       >
-        Name Name
-      </Text>
+        <Text
+          fontWeight={500}
+          color='white'
+        >
+          {displayName ? displayName : email}
+        </Text>
 
-      <Avatar
-        name='Name Name'
-        src='https://bit.ly/dan-abramov'
-      />
-    </Flex>
-  ): null;
+        <Avatar
+          name={displayName as string}
+          src={photoURL as string}
+        />
+      </Flex>
+    );
+  }
+
+  return null;
 };
 
 export { Profile };

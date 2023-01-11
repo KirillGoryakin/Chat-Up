@@ -1,6 +1,7 @@
 import { Button, Flex } from "@chakra-ui/react";
-import { useAppSelector } from "hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { useNavigate } from "react-router";
+import { logOut } from "store/slices/AuthSlice";
 
 type Props = {
   [key: string]: any;
@@ -8,12 +9,13 @@ type Props = {
 
 const SignButtons: React.FC<Props> = (props) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const user = useAppSelector(store => store.auth.user);
   
   return (
     <Flex {...props}>
       {user ? 
-        <Button>
+        <Button onClick={() => dispatch(logOut())}>
           Log Out
         </Button>
         :
