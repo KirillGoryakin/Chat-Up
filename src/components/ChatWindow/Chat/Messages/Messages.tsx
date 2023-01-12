@@ -1,27 +1,41 @@
 import { Flex } from "@chakra-ui/react";
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { Message } from "./Message";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { firestore } from "firebaseApp";
+import { Message as MessageType, setMessages } from "store/slices/AuthSlice";
 
 const Messages = () => {
-  const messages = [
-    {text: 'Some text', isOur: false},
-    {text: 'A lot of text text text text text text', isOur: false},
-    {text: 'My reply', isOur: true},
-    {text: 'I', isOur: true},
-    {text: 'like', isOur: true},
-    {text: 'to', isOur: true},
-    {text: 'reply', isOur: true},
-    {text: 'with', isOur: true},
-    {text: 'one', isOur: true},
-    {text: 'word', isOur: true},
-    {text: 'per', isOur: true},
-    {text: 'message', isOur: true},
-    {text: 'I hate when people reply like that 😡.', isOur: false},
-    {text: 'Please stop', isOur: false},
-    {text: 'Also here is a long text for ya', isOur: true},
-    {text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio fuga corrupti cumque voluptates saepe sequi voluptatem id numquam repellat sunt voluptate ratione, labore possimus ut expedita ex provident? Blanditiis, a. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio fuga corrupti cumque voluptates saepe sequi voluptatem id numquam repellat sunt voluptate ratione, labore possimus ut expedita ex provident? Blanditiis, a.', isOur: true},
-    {text: 'Thanks, here is mine:', isOur: false},
-    { text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio fuga corrupti cumque voluptates saepe sequi voluptatem id numquam repellat sunt voluptate ratione, labore possimus ut expedita ex provident? Blanditiis, a. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio fuga corrupti cumque voluptates saepe sequi voluptatem id numquam repellat sunt voluptate ratione, labore possimus ut expedita ex provident? Blanditiis, a. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio fuga corrupti cumque voluptates saepe sequi voluptatem id numquam repellat sunt voluptate ratione, labore possimus ut expedita ex provident? Blanditiis, a. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio fuga corrupti cumque voluptates saepe sequi voluptatem id numquam repellat sunt voluptate ratione, labore possimus ut expedita ex provident? Blanditiis, a.', isOur: false},
-  ];
+  const dispatch = useAppDispatch();
+  const state = useAppSelector(state => state.auth);
+  const user = state.user;
+  const chatId = state.currentChat?.id;
+  const messages = state.currentChat?.messages;
+
+  useEffect(() => {
+    const q = query(collection(firestore, `/chats/${chatId}/messages`));
+    const unsubscribe = onSnapshot(q, querySnapshot => {
+      let messages: MessageType[] = [];
+      
+      querySnapshot.forEach(doc => {
+        const message: MessageType = {
+          id: doc.id,
+          date: doc.get('date'),
+          text: doc.get('text'),
+          uid: doc.get('uid'),
+        };
+
+        messages.push(message);
+      });
+
+      dispatch(setMessages(messages));
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [chatId, dispatch]);
   
   return (
     <Flex
@@ -31,7 +45,13 @@ const Messages = () => {
       px={5}
       pt={2}
     >
-      {messages.map((msg, i) => <Message key={i} message={msg} />)}
+      {user && messages &&
+      messages.map(msg => 
+        <Message
+          key={msg.id}
+          text={msg.text}
+          isOur={msg.uid === user.uid}
+        />)}
     </Flex>
   )
 }

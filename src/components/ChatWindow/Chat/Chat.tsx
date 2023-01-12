@@ -1,6 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { Messages } from "./Messages";
-import { SendForm } from "./SendForm";
+import { MessageForm } from "./MessageForm";
 import { TopBar } from "./TopBar";
 
 const Chat = () => {
@@ -8,12 +8,13 @@ const Chat = () => {
     <Flex
       flexDirection='column'
       justifyContent='space-between'
+      w='100%'
     >
       <TopBar />
       
       <Messages />
 
-      <SendForm />
+      <MessageForm />
     </Flex>
   )
 }

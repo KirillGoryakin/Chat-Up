@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import { App } from 'components/App';
 import './assets/css/index.css';
-import './firebase';
+import './firebaseApp';
 
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider } from 'react-redux';

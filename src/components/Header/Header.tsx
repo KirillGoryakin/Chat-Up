@@ -13,6 +13,7 @@ const Header = () => {
       background='dark.700'
       boxShadow='xl'
       justifyContent='center'
+      zIndex={9999}
     >
       <Flex
         w='100%'

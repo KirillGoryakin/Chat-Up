@@ -1,6 +1,9 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { useAppSelector } from "hooks/reduxHooks";
 
 const TopBar = () => {
+  const currentChat = useAppSelector(state => state.auth.currentChat);
+  
   return (
     <Flex
       w='100%'
@@ -9,21 +12,33 @@ const TopBar = () => {
       borderBottom='2px solid #282626'
       alignItems='center'
     >
-      <Avatar
-        name='Name Name'
-        src='https://bit.ly/dan-abramov'
-        mr={4}
-      />
+      {currentChat ?
+      <>
+        <Avatar
+          name={currentChat.displayName}
+          src={currentChat.photoUrl}
+          mr={4}
+        />
 
+        <Text
+          fontSize='xl'
+          fontWeight={500}
+          color='white'
+        >
+          {currentChat.displayName}
+        </Text>
+      </>
+      :
       <Text
         fontSize='xl'
         fontWeight={500}
         color='white'
       >
-        Name Name
+        No chat selected
       </Text>
+      }
     </Flex>
-  )
+  );
 }
 
 export { TopBar };

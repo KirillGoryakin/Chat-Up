@@ -11,15 +11,14 @@ type Props = {
 const ChatItem: React.FC<Props> = ({ chat }) => {
   return (
     <Flex
-      as={motion.div}
       py={2}
       pl={5}
       w='100%'
       borderBottom='2px solid #282626'
       alignItems='center'
       cursor='pointer'
-      initial={{ background: 'none' }}
-      whileHover={{ background: '#595959' }}
+      background='none'
+      _hover={{ background: '#595959' }}
       transition='0.1s background ease-in-out'
     >
       <Avatar
