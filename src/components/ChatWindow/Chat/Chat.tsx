@@ -7,8 +7,7 @@ const Chat = () => {
   return (
     <Flex
       flexDirection='column'
-      justifyContent='space-between'
-      w='100%'
+      w='900px'
     >
       <TopBar />
       

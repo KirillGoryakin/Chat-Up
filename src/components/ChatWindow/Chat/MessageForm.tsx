@@ -3,7 +3,7 @@ import sendIcon from 'assets/png/send.png';
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { useEffect, useState } from "react";
-import { sendMessage } from "store/slices/AuthSlice";
+import { sendMessage } from "store/authThunks";
 
 type SendFormEvent = {
   target: {
@@ -49,9 +49,8 @@ const MessageForm = () => {
     <Flex
       as='form'
       onSubmit={handleSubmit}
-      py={2}
-      px={5}
-      gap={3}
+      py={2} px={5}
+      mt='auto' gap={3}
     >
       <Input
         placeholder='Message'

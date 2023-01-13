@@ -2,19 +2,22 @@ import { Flex } from "@chakra-ui/react";
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { Message } from "./Message";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { firestore } from "firebaseApp";
-import { Message as MessageType, setMessages } from "store/slices/AuthSlice";
+import { setCurrentMessages } from "store/AuthSlice";
+import { Message as MessageType } from "appTypes";
 
 const Messages = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(state => state.auth);
   const user = state.user;
   const chatId = state.currentChat?.id;
-  const messages = state.currentChat?.messages;
+  const messages = state.currentMessages;
 
   useEffect(() => {
-    const q = query(collection(firestore, `/chats/${chatId}/messages`));
+    if (!chatId) return;
+    
+    const q = query(collection(firestore, `/chats/${chatId}/messages`), orderBy('date'));
     const unsubscribe = onSnapshot(q, querySnapshot => {
       let messages: MessageType[] = [];
       
@@ -29,7 +32,7 @@ const Messages = () => {
         messages.push(message);
       });
 
-      dispatch(setMessages(messages));
+      dispatch(setCurrentMessages(messages));
     });
 
     return () => {

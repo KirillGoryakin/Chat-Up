@@ -1,6 +1,6 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { useAppDispatch } from "hooks/reduxHooks";
-import { logIn, logInWithGoogle } from "store/slices/AuthSlice";
+import { logIn, logInWithGoogle } from "store/authThunks";
 import { FormInput } from "./FormInput";
 import { GoogleButton } from "./GoogleButton";
 

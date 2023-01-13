@@ -3,15 +3,9 @@ import { combineReducers } from "redux";
 import {
   persistStore,
   persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import authReducer from './slices/AuthSlice';
+import authReducer from './AuthSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer

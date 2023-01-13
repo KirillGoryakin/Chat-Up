@@ -1,7 +1,7 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { useNavigate } from "react-router";
-import { logOut } from "store/slices/AuthSlice";
+import { logOut } from "store/authThunks";
 
 type Props = {
   [key: string]: any;

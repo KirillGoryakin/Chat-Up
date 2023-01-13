@@ -1,11 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { firestore } from 'firebaseApp';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   getAuth,
   updateProfile,
-  User,
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
@@ -14,6 +13,7 @@ import {
   collection,
   Timestamp
 } from 'firebase/firestore';
+import { AuthState } from 'appTypes';
 
 interface SignInPayload {
   email: string,
@@ -41,7 +41,7 @@ interface SignUpPayload extends SignInPayload {
 
 export const signUp = createAsyncThunk(
   'auth/signUp',
-  async (payload: SignUpPayload, {rejectWithValue}) => {
+  async (payload: SignUpPayload, { rejectWithValue }) => {
     const { email, password, name, avatar } = payload;
     const auth = getAuth();
 
@@ -49,10 +49,10 @@ export const signUp = createAsyncThunk(
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(user, { displayName: name, photoURL: avatar });
       return user;
-    } catch(e) {
+    } catch (e) {
       return rejectWithValue(e);
     }
-});
+  });
 
 export const logInWithGoogle = createAsyncThunk(
   'auth/logInWithGoogle',
@@ -75,7 +75,7 @@ export const logOut = createAsyncThunk(
 
     try {
       auth.signOut();
-      return null;
+      return;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -88,7 +88,7 @@ export const sendMessage = createAsyncThunk(
     const uid = state.auth.user?.uid;
     const chatId = state.auth.currentChat?.id;
     const date = Timestamp.now();
-    
+
     if (!uid || !chatId) return rejectWithValue('Something wend wrong');
 
     try {
@@ -103,67 +103,3 @@ export const sendMessage = createAsyncThunk(
       return rejectWithValue(e);
     }
   });
-
-export interface Message {
-  id: string;
-  text: string;
-  uid: string;
-  date: Timestamp;
-};
-export interface Chat {
-  id: string;
-  displayName: string;
-  photoUrl: string;
-  messages: Message[];
-};
-export interface AuthState {
-  user: User | null;
-  currentChat: Chat | null;
-};
-
-const initialState: AuthState = {
-  user: null,
-  currentChat: {
-    id: 'NtlWol0Rd1VRXoYKJiJL',
-    displayName: 'Kirill Goryakin',
-    photoUrl: 'https://lh3.googleusercontent.com/a/AEdFTp658XskiFQWoz_TWcIjRWK-QbHYaLFl4eTIGSgw=s96-c',
-    messages: []
-  },
-};
-
-const setUser = (
-  state: AuthState,
-  action: PayloadAction<User | null>
-) => {
-  state.user = action.payload;
-};
-
-const logError = (
-  _: any,
-  action: PayloadAction<any>
-) => console.error(action.payload);
-
-const authSlice = createSlice({
-  name: 'auth',
-  initialState,
-  reducers: {
-    setMessages(state, action: PayloadAction<Message[]>){
-      if (!state.currentChat?.messages) return;
-      state.currentChat.messages = action.payload;
-    },
-  },
-  extraReducers: (builder) =>
-    builder
-      .addCase(logIn.fulfilled, setUser)
-      .addCase(logIn.rejected, logError)
-      .addCase(signUp.fulfilled, setUser)
-      .addCase(signUp.rejected, logError)
-      .addCase(logInWithGoogle.fulfilled, setUser)
-      .addCase(logInWithGoogle.rejected, logError)
-      .addCase(logOut.fulfilled, setUser)
-      .addCase(logOut.rejected, logError)
-      .addCase(sendMessage.rejected, logError)
-});
-
-export const { setMessages } = authSlice.actions;
-export default authSlice.reducer;

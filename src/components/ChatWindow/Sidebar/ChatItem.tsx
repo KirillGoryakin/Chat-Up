@@ -1,29 +1,32 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import { Chat } from "appTypes";
+import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
+import { setCurrentChat } from "store/AuthSlice";
 
 type Props = {
-  chat: {
-    name: string;
-    avatar: string;
-  };
+  chat: Chat;
 };
 
 const ChatItem: React.FC<Props> = ({ chat }) => {
+  const dispatch = useAppDispatch();
+  const currentChat = useAppSelector(state => state.auth.currentChat);
+  
   return (
     <Flex
-      py={2}
-      pl={5}
+      onClick={() => dispatch(setCurrentChat(chat))}
+      py={2} pl={5}
       w='100%'
       borderBottom='2px solid #282626'
       alignItems='center'
       cursor='pointer'
-      background='none'
+      background={currentChat?.id === chat.id ? '#545454' : 'none'}
       _hover={{ background: '#595959' }}
       transition='0.1s background ease-in-out'
+      userSelect='none'
     >
       <Avatar
-        name={chat.name}
-        src={chat.avatar}
+        name={chat.displayName}
+        src={chat.photoUrl}
         mr={4}
       />
 
@@ -32,7 +35,7 @@ const ChatItem: React.FC<Props> = ({ chat }) => {
         fontWeight={500}
         color='white'
       >
-        {chat.name}
+        {chat.displayName}
       </Text>
     </Flex>
   );

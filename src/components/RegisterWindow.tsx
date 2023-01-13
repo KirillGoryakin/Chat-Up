@@ -1,7 +1,7 @@
 import { Button, Flex } from "@chakra-ui/react";
 import { FormInput } from "components/FormInput";
 import { useAppDispatch } from "hooks/reduxHooks";
-import { logInWithGoogle, signUp } from "store/slices/AuthSlice";
+import { logInWithGoogle, signUp } from "store/authThunks";
 import { GoogleButton } from "./GoogleButton";
 
 type RegisterFormEvent = {
