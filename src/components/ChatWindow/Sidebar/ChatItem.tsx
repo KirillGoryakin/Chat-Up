@@ -1,5 +1,6 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
 import { Chat } from "appTypes";
+import { motion } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { setCurrentChat } from "store/AuthSlice";
 
@@ -14,6 +15,10 @@ const ChatItem: React.FC<Props> = ({ chat }) => {
   return (
     <Flex
       onClick={() => dispatch(setCurrentChat(chat))}
+      as={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      layout
       py={2} pl={5}
       w='100%'
       borderBottom='2px solid #282626'

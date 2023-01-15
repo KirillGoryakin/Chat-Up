@@ -1,4 +1,5 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { useAppSelector } from "hooks/reduxHooks";
 
 const TopBar = () => {
@@ -15,12 +16,20 @@ const TopBar = () => {
       {currentChat ?
       <>
         <Avatar
+          key={currentChat.photoUrl}
+          as={motion.span}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           name={currentChat.displayName}
           src={currentChat.photoUrl}
           mr={4}
         />
 
         <Text
+          key={currentChat.displayName}
+          as={motion.p}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           fontSize='xl'
           fontWeight={500}
           color='white'

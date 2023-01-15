@@ -1,4 +1,5 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 
 type Props = {
   text: string;
@@ -8,6 +9,10 @@ type Props = {
 const Message: React.FC<Props> = ({ text, isOur }) => {
   return (
     <Flex
+      as={motion.div}
+      initial={{ x: isOur ? 500 : -500 }}
+      animate={{ x: 0 }}
+      transitionDuration='0.1s'
       justifyContent={isOur ? 'flex-end' : 'flex-start'}
       py={1}
     >

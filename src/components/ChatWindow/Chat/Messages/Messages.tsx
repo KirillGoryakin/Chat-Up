@@ -6,6 +6,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "firebaseApp";
 import { setCurrentMessages } from "store/AuthSlice";
 import { Message as MessageType } from "appTypes";
+import { AnimatePresence } from "framer-motion";
 
 const Messages = () => {
   const dispatch = useAppDispatch();
@@ -38,18 +39,21 @@ const Messages = () => {
   return (
     <Flex
       w='100%'
+      overflowX='hidden'
       overflowY='auto'
       flexDirection='column'
       px={5}
       pt={2}
     >
-      {user && messages &&
-      messages.map(msg => 
-        <Message
-          key={msg.uid + msg.date.seconds}
-          text={msg.text}
-          isOur={msg.uid === user.uid}
-        />)}
+      <AnimatePresence>
+        {user && messages &&
+          messages.map(msg =>
+            <Message
+              key={msg.uid + msg.date.seconds}
+              text={msg.text}
+              isOur={msg.uid === user.uid}
+            />)}
+      </AnimatePresence>
     </Flex>
   )
 }
