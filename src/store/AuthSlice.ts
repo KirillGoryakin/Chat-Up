@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from 'firebase/auth';
 import { AuthState, Chat, Message } from 'appTypes';
 import {
+  createChat,
   logIn,
   logInWithGoogle,
   logOut,
@@ -23,13 +24,6 @@ const clearState = (state: AuthState) => {
   state.currentMessages = [];
 };
 
-const setUser = (
-  state: AuthState,
-  action: PayloadAction<User | null>
-) => {
-  state.user = action.payload;
-};
-
 const logError = (
   _: any,
   action: PayloadAction<any>
@@ -39,6 +33,9 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setUser(state, action: PayloadAction<User | null>) {
+      state.user = action.payload;
+    },
     setCurrentMessages(state, action: PayloadAction<Message[]>){
       state.currentMessages = action.payload;
     },
@@ -51,18 +48,17 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(logIn.fulfilled, setUser)
       .addCase(logIn.rejected, logError)
-      .addCase(signUp.fulfilled, setUser)
       .addCase(signUp.rejected, logError)
-      .addCase(logInWithGoogle.fulfilled, setUser)
       .addCase(logInWithGoogle.rejected, logError)
       .addCase(logOut.fulfilled, clearState)
       .addCase(logOut.rejected, logError)
       .addCase(sendMessage.rejected, logError)
+      .addCase(createChat.rejected, logError)
 });
 
 export const {
+  setUser,
   setCurrentMessages,
   setChats,
   setCurrentChat

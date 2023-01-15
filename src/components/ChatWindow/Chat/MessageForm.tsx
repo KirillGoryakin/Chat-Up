@@ -1,8 +1,6 @@
 import { Flex, IconButton, Input } from "@chakra-ui/react";
 import sendIcon from 'assets/png/send.png';
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
-import { useEffect, useState } from "react";
 import { sendMessage } from "store/authThunks";
 
 type SendFormEvent = {
@@ -13,36 +11,22 @@ type SendFormEvent = {
 
 const MessageForm = () => {
   const dispatch = useAppDispatch();
-  const currentChat = useAppSelector(state => state.auth.currentChat);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      getAuth(),
-      setUser,
-      console.log
-    );
-
-    return () => {
-      unsubscribe();
-    }
-  }, []);
+  const state = useAppSelector(state => state.auth);
+  const { currentChat, user } = state;
   
   if (!currentChat) return null;
   
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
 
-    if (!user) return;
-    
     const
       { target } = e as typeof e & SendFormEvent,
       message = target.message.value.trim();
+    
+    if (!user || !message) return;
 
-    if (message) {
-      dispatch(sendMessage(message));
-      target.message.value = '';
-    }
+    dispatch(sendMessage(message));
+    target.message.value = '';
   }
   
   return (

@@ -1,10 +1,11 @@
 import { Flex } from "@chakra-ui/react";
 import { Chat } from "appTypes";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { firestore } from "firebaseApp";
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { useEffect } from "react";
 import { setChats } from "store/AuthSlice";
+import { AddChat } from "./AddChat";
 import { ChatItem } from "./ChatItem";
 import { SidebarHeading } from "./SidebarHeading";
 
@@ -13,24 +14,26 @@ const Sidebar = () => {
   const { chats, user } = useAppSelector(state => state.auth);
   
   useEffect(() => {
-    const q = query(collection(firestore, 'chats'), where('uids', 'array-contains', user?.uid));
-    const unsubscribe = onSnapshot(q, querySnapshot => {
-      let chats: Chat[] = [];
+    const q = query(
+      collection(firestore, 'chats'),
+      where('uids', 'array-contains', user?.uid),
+      orderBy('lastUpdated', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, chatsSnap => {
+      let fetchedChats: Chat[] = [];
 
-      querySnapshot.forEach(doc => {
-        const partnerId = doc.get('uids').find((uid: string) => uid !== user?.uid);
-        const partnerUser = doc.get('users')[partnerId];
+      chatsSnap.forEach(chat => {
+        const partnerId = chat.get('uids').find((uid: string) => uid !== user?.uid);
+        const partnerUser = chat.get('users')[partnerId];
 
-        const chat: Chat = {
-          id: doc.id,
+        fetchedChats.push({
+          id: chat.id,
           displayName: partnerUser.displayName,
           photoUrl: partnerUser.photoUrl,
-        };
-
-        chats.push(chat);
+        });
       });
 
-      dispatch(setChats(chats));
+      dispatch(setChats(fetchedChats));
     });
 
     return () => {
@@ -43,8 +46,7 @@ const Sidebar = () => {
       flexDirection='column'
       alignItems='center'
       borderRight='2px solid #282626'
-      w={300}
-      py={30}
+      w={300} pt={30} pb={15}
     >
       <SidebarHeading />
 
@@ -54,6 +56,8 @@ const Sidebar = () => {
       }}>
         {chats.map(chat => <ChatItem key={chat.id} chat={chat} />)}
       </div>
+
+      <AddChat />
     </Flex>
   )
 }

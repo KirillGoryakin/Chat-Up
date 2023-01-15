@@ -2,7 +2,7 @@ import { Flex } from "@chakra-ui/react";
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
 import { Message } from "./Message";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "firebaseApp";
 import { setCurrentMessages } from "store/AuthSlice";
 import { Message as MessageType } from "appTypes";
@@ -16,27 +16,22 @@ const Messages = () => {
 
   useEffect(() => {
     if (!chatId) return;
-    
-    const q = query(collection(firestore, `/chats/${chatId}/messages`), orderBy('date'));
-    const unsubscribe = onSnapshot(q, querySnapshot => {
-      let messages: MessageType[] = [];
-      
-      querySnapshot.forEach(doc => {
-        const message: MessageType = {
-          id: doc.id,
-          date: doc.get('date'),
-          text: doc.get('text'),
-          uid: doc.get('uid'),
-        };
 
-        messages.push(message);
+    const messagesRef = doc(firestore, `/chats/${chatId}/messages/allMessages`);
+    const unsub = onSnapshot(messagesRef, messagesSnap => {
+      let messages: MessageType[] = messagesSnap.get('messages');
+
+      messages.sort((a, b) => {
+        const aDate = a.date.seconds;
+        const bDate = b.date.seconds;
+        return aDate - bDate;
       });
 
       dispatch(setCurrentMessages(messages));
     });
 
     return () => {
-      unsubscribe();
+      unsub();
     };
   }, [chatId, dispatch]);
   
@@ -51,7 +46,7 @@ const Messages = () => {
       {user && messages &&
       messages.map(msg => 
         <Message
-          key={msg.id}
+          key={msg.uid + msg.date.seconds}
           text={msg.text}
           isOur={msg.uid === user.uid}
         />)}

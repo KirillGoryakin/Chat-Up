@@ -11,30 +11,36 @@ import {
 import {
   addDoc,
   collection,
-  Timestamp
+  doc,
+  getDoc,
+  setDoc,
+  Timestamp,
+  updateDoc
 } from 'firebase/firestore';
 import { AuthState } from 'appTypes';
+import { addUserToDataBase } from './utils';
+import { setCurrentChat } from './AuthSlice';
 
-interface SignInPayload {
+interface LogInPayload {
   email: string,
   password: string,
 };
 
 export const logIn = createAsyncThunk(
   'auth/logIn',
-  async (payload: SignInPayload, { rejectWithValue }) => {
+  async (payload: LogInPayload, { rejectWithValue }) => {
     const { email, password } = payload;
     const auth = getAuth();
 
     try {
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
-      return user;
+      await signInWithEmailAndPassword(auth, email, password);
+      return;
     } catch (e) {
       return rejectWithValue(e);
     }
   });
 
-interface SignUpPayload extends SignInPayload {
+interface SignUpPayload extends LogInPayload {
   name: string;
   avatar: string;
 };
@@ -48,7 +54,14 @@ export const signUp = createAsyncThunk(
     try {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(user, { displayName: name, photoURL: avatar });
-      return user;
+
+      await addUserToDataBase({
+        uid: user.uid,
+        displayName: user.displayName,
+        photoUrl: user.photoURL,
+      });
+      
+      return;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -62,7 +75,14 @@ export const logInWithGoogle = createAsyncThunk(
 
     try {
       const { user } = await signInWithPopup(auth, provider);
-      return user;
+
+      await addUserToDataBase({
+        uid: user.uid,
+        displayName: user.displayName,
+        photoUrl: user.photoURL,
+      });
+      
+      return;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -92,12 +112,66 @@ export const sendMessage = createAsyncThunk(
     if (!uid || !chatId) return rejectWithValue('Something wend wrong');
 
     try {
-      const docRef = await addDoc(
-        collection(firestore, `/chats/${chatId}/messages`),
-        { uid, text, date }
-      );
+      const allMsgsRef = doc(firestore, `/chats/${chatId}/messages/allMessages`);
 
-      console.log("Document written with ID: ", docRef.id);
+      const allMsgsSnap = await getDoc(allMsgsRef);
+      const allMsgs = allMsgsSnap.get('messages');
+      
+      await updateDoc(allMsgsRef, {
+        messages: allMsgs.concat({ uid, text, date })
+      });
+
+      await updateDoc(doc(firestore, `/chats/${chatId}`), {
+        lastUpdated: date
+      });
+      
+      return;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  });
+
+type CreateChatArg = {
+  uid: string;
+  displayName: string;
+  photoUrl: string;
+};
+  
+export const createChat = createAsyncThunk(
+  'auth/createChat',
+  async (arg: CreateChatArg, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as { auth: AuthState };
+    const user = state.auth.user;
+
+    if (!user) return rejectWithValue('Something wend wrong');
+
+    const newChat = {
+      uids: [user.uid, arg.uid],
+      users: {
+        [user.uid]: {
+          displayName: user.displayName,
+          photoUrl: user.photoURL,
+        },
+        [arg.uid]: {
+          displayName: arg.displayName,
+          photoUrl: arg.photoUrl,
+        }
+      },
+      lastUpdated: Timestamp.now(),
+    };
+    
+    try {
+      const chatRef = await addDoc(collection(firestore, 'chats'), newChat);
+      await setDoc(doc(firestore, `chats/${chatRef.id}/messages/allMessages`), {
+        messages: []
+      });
+
+      dispatch(setCurrentChat({
+        id: chatRef.id,
+        displayName: arg.displayName,
+        photoUrl: arg.photoUrl,
+      }));
+
       return;
     } catch (e) {
       return rejectWithValue(e);
