@@ -1,4 +1,4 @@
-import { Text } from "@chakra-ui/react";
+import { Text } from '@chakra-ui/react';
 
 const Logo = () => {
   return (
@@ -6,6 +6,7 @@ const Logo = () => {
       fontSize='3xl'
       fontWeight={600}
       color='white'
+      mr='auto'
     >
       Chat Up!
     </Text>

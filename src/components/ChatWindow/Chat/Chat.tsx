@@ -1,13 +1,13 @@
-import { Flex } from "@chakra-ui/react";
-import { Messages } from "./Messages";
-import { MessageForm } from "./MessageForm";
-import { TopBar } from "./TopBar";
+import { Flex } from '@chakra-ui/react';
+import { Messages } from './Messages';
+import { MessageForm } from './MessageForm';
+import { TopBar } from './TopBar';
 
 const Chat = () => {
   return (
     <Flex
       flexDirection='column'
-      w='900px'
+      w={{ base: '100%', md: 400, xl: 900 }}
     >
       <TopBar />
       

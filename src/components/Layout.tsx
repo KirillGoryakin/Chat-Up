@@ -1,6 +1,6 @@
-import { Outlet } from "react-router";
-import { Header } from "./Header";
-import { Window } from "./Window";
+import { Outlet } from 'react-router';
+import { Header } from './Header';
+import { Window } from './Window';
 
 const Layout = () => {
   return (

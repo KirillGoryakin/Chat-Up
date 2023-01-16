@@ -1,15 +1,15 @@
-import { useAppSelector } from "hooks/reduxHooks";
+import { useAppSelector } from 'hooks/reduxHooks';
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Navigate,
   Route,
   RouterProvider
-} from "react-router-dom";
-import { ChatWindow } from "./ChatWindow";
-import { Layout } from "./Layout";
-import { LoginWindow } from "./LoginWindow";
-import { RegisterWindow } from "./RegisterWindow";
+} from 'react-router-dom';
+import { ChatWindow } from './ChatWindow';
+import { Layout } from './Layout';
+import { LoginWindow } from './LoginWindow';
+import { RegisterWindow } from './RegisterWindow';
 
 const publicRouter = createBrowserRouter(createRoutesFromElements(
   <Route path="/" element={<Layout />}>

@@ -1,34 +1,35 @@
-import { Flex } from "@chakra-ui/react";
-import { Logo } from "./Logo";
-import { Profile } from "./Profile";
-import { SignButtons } from "./SignButtons";
+import { Flex } from '@chakra-ui/react';
+import { Logo } from './Logo';
+import { MobileMenu } from './MobileMenu';
+import { Profile } from './Profile';
+import { SignButtons } from './SignButtons';
 
 const Header = () => {
+  const mobile = window.innerWidth <= 768;
+  
   return (
     <Flex
-      position='fixed'
       w='100%'
-      top={0}
-      left={0}
       background='dark.700'
       boxShadow='xl'
       justifyContent='center'
-      zIndex={9999}
     >
       <Flex
         w='100%'
         maxWidth={1440}
         alignItems='center'
-        py={1}
+        py={1} px={8}
       >
         <Logo />
 
         <SignButtons
-          ml='auto'
           gap={4}
+          display={mobile ? 'none' : 'flex'}
         />
 
-        <Profile />
+        <Profile hideText={mobile} />
+
+        <MobileMenu />
       </Flex>
     </Flex>
   );

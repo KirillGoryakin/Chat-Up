@@ -1,12 +1,12 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
-import { Message } from "./Message";
-import { doc, onSnapshot } from "firebase/firestore";
-import { firestore } from "firebaseApp";
-import { setCurrentMessages } from "store/AuthSlice";
-import { Message as MessageType } from "appTypes";
-import { AnimatePresence } from "framer-motion";
+import { useAppDispatch, useAppSelector } from 'hooks/reduxHooks';
+import { Message } from './Message';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { firestore } from 'firebaseApp';
+import { setCurrentMessages } from 'store/AuthSlice';
+import { Message as MessageType } from 'appTypes';
+import { AnimatePresence } from 'framer-motion';
 
 const Messages = () => {
   const dispatch = useAppDispatch();

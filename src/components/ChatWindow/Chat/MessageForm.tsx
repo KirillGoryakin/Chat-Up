@@ -1,7 +1,7 @@
-import { Flex, IconButton, Input } from "@chakra-ui/react";
+import { Flex, IconButton, Input } from '@chakra-ui/react';
 import sendIcon from 'assets/png/send.png';
-import { useAppDispatch, useAppSelector } from "hooks/reduxHooks";
-import { sendMessage } from "store/authThunks";
+import { useAppDispatch, useAppSelector } from 'hooks/reduxHooks';
+import { sendMessage } from 'store/authThunks';
 
 type SendFormEvent = {
   target: {

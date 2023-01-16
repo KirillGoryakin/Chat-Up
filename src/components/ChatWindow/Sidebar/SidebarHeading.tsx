@@ -1,13 +1,13 @@
-import { Heading } from "@chakra-ui/react";
+import { Heading } from '@chakra-ui/react';
 
-const SidebarHeading = () => {
+const SidebarHeading: React.FC<any> = (props) => {
   return (
     <Heading
       size='xl'
       color='white'
       textAlign='center'
-      mx='auto'
-      mb={5}
+      mx='auto' mb={5}
+      {...props}
     >
       Chats
     </Heading>

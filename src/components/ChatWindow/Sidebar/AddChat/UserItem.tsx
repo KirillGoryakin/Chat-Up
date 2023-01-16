@@ -1,6 +1,6 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
-import { useAppDispatch } from "hooks/reduxHooks";
-import { createChat } from "store/authThunks";
+import { Avatar, Flex, Text } from '@chakra-ui/react';
+import { useAppDispatch } from 'hooks/reduxHooks';
+import { createChat } from 'store/authThunks';
 
 type Props = {
   user: {

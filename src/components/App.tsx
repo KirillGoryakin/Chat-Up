@@ -1,8 +1,8 @@
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useAppDispatch } from "hooks/reduxHooks";
-import { useEffect } from "react";
-import { setUser } from "store/AuthSlice";
-import { AppRouter } from "./AppRouter";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useAppDispatch } from 'hooks/reduxHooks';
+import { useEffect } from 'react';
+import { setUser } from 'store/AuthSlice';
+import { AppRouter } from './AppRouter';
 
 const App = () => {
   const dispatch = useAppDispatch();

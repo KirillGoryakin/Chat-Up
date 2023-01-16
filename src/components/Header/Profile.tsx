@@ -1,7 +1,17 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
-import { useAppSelector } from "hooks/reduxHooks";
+import { Avatar, Flex, Text } from '@chakra-ui/react';
+import { useAppSelector } from 'hooks/reduxHooks';
 
-const Profile = () => {
+type Props = {
+  hideText?: boolean;
+  reverse?: boolean;
+  textColor?: string;
+};
+
+const Profile: React.FC<Props> = ({
+  hideText,
+  reverse,
+  textColor = 'white'
+}) => {
   const user = useAppSelector(store => store.auth.user);
   
   if (user){
@@ -10,15 +20,17 @@ const Profile = () => {
     return (
       <Flex
         alignItems='center'
-        gap={2}
-        ml={6}
+        gap={2} ml={6}
+        flexDirection={reverse ? 'row-reverse' : 'unset'}
       >
-        <Text
-          fontWeight={500}
-          color='white'
-        >
-          {displayName ? displayName : email}
-        </Text>
+        {!hideText &&
+          <Text
+            fontWeight={500}
+            color={textColor}
+          >
+            {displayName ? displayName : email}
+          </Text>
+        }
 
         <Avatar
           name={displayName as string}

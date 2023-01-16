@@ -1,6 +1,7 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
-import { motion } from "framer-motion";
-import { useAppSelector } from "hooks/reduxHooks";
+import { Avatar, Flex, Text } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import { useAppSelector } from 'hooks/reduxHooks';
+import { MenuButtonMobile } from '../MenuButtonMobile';
 
 const TopBar = () => {
   const currentChat = useAppSelector(state => state.auth.currentChat);
@@ -13,6 +14,8 @@ const TopBar = () => {
       borderBottom='2px solid #282626'
       alignItems='center'
     >
+      <MenuButtonMobile />
+      
       {currentChat ?
       <>
         <Avatar

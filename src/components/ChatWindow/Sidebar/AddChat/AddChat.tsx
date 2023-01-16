@@ -3,7 +3,11 @@ import { AddIcon } from '@chakra-ui/icons';
 import { Box, Button, Text} from '@chakra-ui/react';
 import { AddChatModal } from './AddChatModal';
 
-const AddChat = () => {
+type Props = {
+  mobile?: boolean;
+};
+
+const AddChat: React.FC<Props> = ({ mobile }) => {
   const [open, setOpen] = useState(false);
   
   return (
@@ -18,7 +22,7 @@ const AddChat = () => {
         alignItems='center'
         size='lg'
         w='100%'
-        background='none'
+        background={ mobile ? 'dark.800' : 'none' }
         color='white'
         _hover={{
           background: 'dark.600'

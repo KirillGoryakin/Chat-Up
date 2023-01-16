@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/react";
+import { Input } from '@chakra-ui/react';
 
 const FormInput: React.FC<any> = (props) => 
   <Input
