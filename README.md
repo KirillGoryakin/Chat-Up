@@ -1,46 +1,104 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 💬 Chat Up
+This is a simple chat application with authorization via email or Google. It uses Firebase as backend.
 
-## Available Scripts
+## ✨ Features:
+- Live chatting!
+- Email + password authorization
+- Google authorization
+- People searching
+- Framer Motion animations
 
-In the project directory, you can run:
+## 🔧 Technologies:
+- React JS
+- Typescript
+- Redux
+- Chakra UI
+- Firebase
 
-### `npm start`
+# 👓 Live Demo
+[https://chat-up-kirillgoryakin.vercel.app/](https://chat-up-kirillgoryakin.vercel.app/)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# Development
+Clone repository:
+```
+git clone https://github.com/KirillGoryakin/Chat-Up.git
+```
+Install packages:
+```
+npm i
+```
+Create a Firebase project and set these ENV variables:
+```
+REACT_APP_FIREBASE_API_KEY=
+REACT_APP_FIREBASE_AUTH_DOMAIN=
+REACT_APP_FIREBASE_PROJECT_ID=
+REACT_APP_FIREBASE_STORAGE_BUCKET=
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=
+REACT_APP_FIREBASE_APP_ID=
+REACT_APP_FIREBASE_MEASUREMENT_ID=
+```
+### Start dev server:
+```
+npm run start
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Firestore database structure
+```
+Collection    Documents    Doc Fields
+users      -> allUsers  -> {users: [{uid, displayName, photoUrl}, ...]}
 
-### `npm test`
+chats      -> {chatId}  -> {
+                            lastUpdated,
+                            uids: ["uid1", "uid2"],
+                            users: {
+                              "uid1": {displayName, photoUrl},
+                              "uid2": {displayName, photoUrl}
+                            }}
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+                  Subcollection
+                  -> messages -> allMessages -> {messages: [{uid, date, text}, ...]}
+```
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Firestore security rules
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/allUsers {
+      allow read;
+      allow update:
+        if request.auth != null
+        && request.resource.data.users.size() == resource.data.users.size() + 1
+        && request.resource.data.users.hasAll(resource.data.users);
+    }
+  
+    match /chats/{chatId} {
+    
+      function isUserInChat() {
+        return
+          request.auth != null
+          && get(/databases/$(database)/documents/chats/$(chatId))
+              .data.uids.hasAny([request.auth.uid])
+      }
+    
+      allow read: if request.auth != null;
+    
+      allow update: if isUserInChat();
+    
+      allow create:
+        if request.auth != null
+        && request.resource.data.uids.size() == 2
+        && request.resource.data.users.size() == 2;
+      
+      match /messages/allMessages {
+        allow read, create: if isUserInChat();
+        allow update:
+          if isUserInChat()
+          && request.resource.data.messages.size() == resource.data.messages.size() + 1
+          && request.resource.data.messages.hasAll(resource.data.messages);
+      }
+    }
+  }
+}
+```
