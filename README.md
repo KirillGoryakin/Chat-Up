@@ -19,7 +19,7 @@ This is a simple chat application with authorization via email or Google. It use
 # 👓 Live Demo
 [https://chat-up-kirillgoryakin.vercel.app/](https://chat-up-kirillgoryakin.vercel.app/)
 
-# Development
+# 💻 Development
 Clone repository:
 ```
 git clone https://github.com/KirillGoryakin/Chat-Up.git
@@ -43,7 +43,18 @@ REACT_APP_FIREBASE_MEASUREMENT_ID=
 npm run start
 ```
 
-## Firestore database structure
+# 🐳 Docker
+### Build image
+```
+docker build . -t chat-up
+```
+### Run container
+```
+docker run -d --rm -p 3000:3000 --name chat-up chat-up
+```
+
+# Firestore Database
+## Database structure
 ```
 Collection    Documents    Doc Fields
 users      -> allUsers  -> {users: [{uid, displayName, photoUrl}, ...]}
@@ -60,7 +71,7 @@ chats      -> {chatId}  -> {
                   -> messages -> allMessages -> {messages: [{uid, date, text}, ...]}
 ```
 
-## Firestore security rules
+## Security rules
 ```
 rules_version = '2';
 service cloud.firestore {
